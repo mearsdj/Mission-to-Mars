@@ -20,8 +20,9 @@ def scrape_all():
         "news_title": news_title,
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
-        "facts": mars_facts(),
-        "last_modified": dt.datetime.now()
+        "facts": mars_facts(browser),
+        "last_modified": dt.datetime.now(),
+        "hemisphere_images":mars_hemispheres(browser)
     }
 
     # Stop webdriver and return data
@@ -31,7 +32,7 @@ def scrape_all():
 
 def mars_news(browser):
     #send browser to mars news site
-    url = 'https://redplanetscience.com'
+    url = 'https://data-class-mars.s3.amazonaws.com/Mars/index.html'
 
     browser.visit(url)
     browser.is_element_present_by_css('div.list_text',wait_time=1)
@@ -63,7 +64,7 @@ def mars_news(browser):
 def featured_image(browser):
     # ## JPL Space Images featured image
     #visit url
-    url = 'https://spaceimages-mars.com'
+    url = 'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/index.html'
     browser.visit(url)
 
     #find and click the full image button
@@ -80,7 +81,7 @@ def featured_image(browser):
         img_url_rel
 
         # Use the base URL to create an absolute URL
-        img_url = f'https://spaceimages-mars.com/{img_url_rel}'
+        img_url = f'https://data-class-jpl-space.s3.amazonaws.com/JPL_Space/{img_url_rel}'
 
     except AttributeError:
         return None
@@ -101,9 +102,36 @@ def mars_facts(browser):
     df.set_index('description', inplace=True)
 
     #add bootstrap styling to tble
-    return  df.to_html(classes="table table-striped")
+    return  df.to_html(classes="table table-hover table-striped")
+def mars_hemispheres(browser):
+    url = 'https://marshemispheres.com/'
+    # url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(url)
+    # 2. Create a list to hold the images and titles.
+    hemisphere_image_urls = []
 
+    # 3. Write code to retrieve the image urls and titles for each hemisphere.
+    html = browser.html
+    soup_hemispheres = soup(html, 'html.parser')
+    listitems = soup_hemispheres.find_all('div', class_='description')
+    for item in listitems:
+        # browser.links.find_by_partial_href('.html').click
+        img_url_rel = item.find('a', class_='itemLink product-item')['href']
+        img_url = f'{url}{img_url_rel}'
+        browser.visit(img_url)
+        html_item = browser.html
+        soup_item = soup(html_item, 'html.parser')
+        target_img_url_rel = soup_item.find('img', class_='wide-image').get('src')
+        target_img_url = f'{url}{target_img_url_rel}'
+        title = item.find('h3').text
+        hemisphere_image_urls.append({'img_url': target_img_url, 'title': title})
+        # print(item.find('h3').text, target_img_url)
+        browser.back
 
+    # 5. Quit the browser
+    browser.quit()
+
+    return hemisphere_image_urls
 
 if __name__ == "__main__":
     # If running as script, print scraped data

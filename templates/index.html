@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mission to Mars</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body>
+<div class="container">
+    <div class ="jumbotron text-center">
+        <h1>Mission to Mars</h1>
+        <p><a class="btn btn-primary btn-lg" href="/scrape"
+                  role="button">Scrape New Data</a></p>
+    </div>
+    <!-- Mars News -->
+    <div class="row", id="mars-news">
+        <div class="col-xs-12">
+            <div class = "media">
+                <div class = "media-body">
+                    <!--<h2>Latest Mars News</h2>
+                        <h4 class="media-heading">{{mars.news_title}}</h4>
+                        <p>{{mars.news_paragraph}}</p>
+                </div>-->
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center"><h2 style="color:rgb(156, 46, 53);">Latest Mars News</h2></div>
+                        <div class="panel-body">
+                            <h4 class="media-heading">{{mars.news_title}}</h4>
+                            <p>{{mars.news_paragraph}}</p>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Featured Image -->
+    <!-- First Level -->
+
+    <div class = "row" id="mars-featured-image">
+        <!-- Second level -->
+        <div class = "col-md-8 col-xs-12">
+            <div class="panel panel-default">
+                    <div class="panel-heading text-center"><h2 style="color:rgb(156, 46, 53);">Featured Mars Image</h2></div>
+                        <div class="panel-body">
+                            <img src = "{{mars.featured_image}}" class="img-responsive" alt = "Responsive image">
+                        </div>
+
+            </div>
+        </div>
+
+        <!-- Mars Facts -->
+        <div class = "col-md-4 col-xs-12">
+            <div class="row" id = "mars-facts">
+                <div class ="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h4 style="color:rgb(156, 46, 53);">Mars Facts</h4>
+                </div>
+                <div class="panel-body">
+                    {{mars.facts | safe}}
+                </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class = "row" id="mars-fullres-hemispheres-container">
+        <div class="panel panel-default" id="master panel">
+
+            <div class="panel-heading text-center">
+                <h2 class="text-center" style="color:rgb(156, 46, 53);">Mars Hemispheres</h2>
+            </div>
+            <div class="panel-body">
+            {% for item in mars.hemisphere_images %}
+            <div class="col-xs-6">
+                <div class="panel panel-default">
+                <div class="panel-heading text-center">{{ item['title'] }}</div>
+                    <div class="panel-body">
+                        <img src = {{item['img_url']}} title="{{item['title']}}" class="img-circle img-responsive center-block"></img>
+            <!--style="max-width: 85%; height: auto;"-->
+
+<!--                        <div class=caption>-->
+<!--                            <p class =text-center>-->
+<!--                            {{ item['title'] }}-->
+<!--                            </p>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</body>
+
+</html>
